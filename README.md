@@ -2,148 +2,227 @@
 
 ## Overview
 
-This repository contains the development of an industrial Ethernet communication system using STM32 microcontrollers and the LAN8651 Ethernet PHY.
+This repository contains the development of an industrial Ethernet communication system using STM32 microcontrollers and the LAN8651 10BASE-T1S MAC-PHY.
 
-The project focuses on low-level embedded firmware development, industrial communication, USB networking, SPI-based Ethernet communication, PLCA configuration, and performance analysis.
-
-The system supports:
-
-- SPI-based communication with LAN8651
-- USB RNDIS/NCM networking
-- USB HID communication
-- Multi-node Ethernet communication
-- PLCA configuration and analysis
-- Register-level debugging and performance tuning
+The project focuses on:
+- SPI-based Ethernet communication
+- USB RNDIS / CDC-NCM integration
+- USB HID-based PLCA control
+- Multi-node 10BASE-T1S networking
+- Register-level LAN8651 configuration
+- Ethernet frame analysis
+- Wireshark packet diagnostics
 - STM32 ↔ BeagleBone communication
-- Python-based monitoring and control tools
 
-This project was developed to explore industrial embedded communication systems and real-time networking concepts.
+The system was developed and tested using:
+- STM32H7
+- STM32H5
+- STM32F407
+- BeagleBone Black
+- LAN8651 MAC-PHY
+
+---
+
+# Project Goals
+
+This project was developed to explore:
+- Industrial Ethernet communication
+- 10BASE-T1S multi-drop networking
+- PLCA (Physical Layer Collision Avoidance)
+- USB networking on STM32
+- Embedded communication stack development
+- Ethernet packet handling and diagnostics
+- Embedded Linux + MCU communication
 
 ---
 
 # System Architecture
 
-```text
-+------------------------------------------------+
-|                    PC Host                     |
-|        Python Monitoring / Analysis Tool       |
-+------------------------------------------------+
-                     ↑
-              USB RNDIS / NCM
-                     ↑
-+------------------------------------------------+
-|                    STM32                       |
-|                                                |
-|  +------------------------------------------+  |
-|  |             Application Layer            |  |
-|  |------------------------------------------|  |
-|  | Communication | PLCA | USB | Diagnostics | |
-|  +------------------------------------------+  |
-|                                                |
-|  +------------------------------------------+  |
-|  |               Driver Layer               |  |
-|  |------------------------------------------|  |
-|  | SPI | GPIO | DMA | USB | UART | Timers  |  |
-|  +------------------------------------------+  |
-+------------------------------------------------+
-                     ↓ SPI
-+------------------------------------------------+
-|                  LAN8651 PHY                   |
-+------------------------------------------------+
-                     ↓ Ethernet
-+------------------------------------------------+
-|                 BeagleBone Node                |
-+------------------------------------------------+
-```
+![System Architecture](Images/SystemArchitecture.jpg)
+
+The firmware architecture consists of:
+- USB composite device support using TinyUSB
+- USB RNDIS / CDC-NCM Ethernet interface
+- USB HID interface for PLCA control
+- SPI-based communication with LAN8651
+- Ethernet frame bridge logic
+- Register-level MAC-PHY configuration
+- 10BASE-T1S multi-drop network communication
+
+The STM32 firmware acts as a bridge between:
+- USB networking interfaces
+- HID control interface
+- LAN8651 industrial Ethernet PHY
+- Multi-node 10BASE-T1S network
 
 ---
 
-# Key Features
+# 3-Node Industrial Ethernet Setup
 
-## Communication Features
+## Multi-Node Communication Architecture
 
-- SPI-based LAN8651 communication
-- USB RNDIS networking support
-- USB NCM support
-- USB HID communication
-- Multi-node communication support
-- Ethernet packet transmission and reception
-- BeagleBone communication testing
+![3-Node Setup](Images/NODESETUP.png)
 
-## Industrial Networking Features
+This setup demonstrates:
+- STM32H7 ↔ LAN8651 communication
+- STM32H5 ↔ LAN8651 communication
+- BeagleBone ↔ LAN8651 communication
+- Multi-node 10BASE-T1S bus communication
+- PLCA-enabled collision-free networking
+- USB-to-Ethernet bridging
 
-- PLCA node configuration
-- Register-level PHY control
-- Multi-node network experimentation
-- Communication performance analysis
-- Throughput testing
-- Packet debugging and monitoring
+---
 
-## Firmware Engineering Features
+# Single Node Development Setup
 
-- STM32 HAL driver integration
-- Modular firmware architecture
-- Driver abstraction
-- Middleware integration
-- Low-level register manipulation
-- Debugging support
+## Real Hardware Setup
 
-## Analysis and Tooling
+![Single Node Setup](Images/LAN8651.jpg)
 
-- Python backend utility
-- Performance analysis scripts
-- PLCA configuration interface
-- Data monitoring and diagnostics
-- Debug logging support
+Development and debugging setup used during firmware integration and Ethernet communication testing.
+
+The setup includes:
+- STM32 development board
+- LAN8651 Click board
+- USB communication to PC
+- SPI-based MAC-PHY communication
+- Ethernet frame testing
+
+---
+
+# Ethernet Frame Communication
+
+## Ethernet Packet Transfer
+
+![Ethernet Frames](Images/Ethernetframes.jpg)
+
+This image shows Ethernet frame transfer testing between nodes over the 10BASE-T1S network.
+
+Features tested:
+- Packet transmission
+- Packet reception
+- Frame integrity
+- Multi-node communication
+- Ethernet frame routing
+
+---
+
+# Wireshark Packet Analysis
+
+## Ethernet Diagnostics and Debugging
+
+![Wireshark Analysis](Images/EthernetframesWireshark.jpg)
+
+Wireshark was used for:
+- Ethernet packet inspection
+- Communication debugging
+- Packet validation
+- Throughput analysis
+- Frame diagnostics
+
+Parameters analyzed:
+- Ethernet frame structure
+- Packet timing
+- Transfer stability
+- Communication reliability
+
+---
+
+# USB Composite Device
+
+## RNDIS + CDC-NCM + HID Integration
+
+![USB Composite Device](Images/NCMHIDdevice.jpg)
+
+The STM32 firmware implements a USB composite device supporting:
+- USB CDC-NCM
+- USB RNDIS
+- USB HID interface
+
+### USB Features
+
+#### USB Networking
+- Ethernet-over-USB
+- Virtual network adapter
+- Packet bridging
+
+#### USB HID
+- PLCA configuration commands
+- Register control
+- Diagnostic communication
+
+---
+
+# Diagnostics and Monitoring
+
+## Communication Diagnostics
+
+![Diagnostics](Images/diagnostics.jpg)
+
+Diagnostic utilities were implemented for:
+- Register monitoring
+- Packet statistics
+- Communication debugging
+- Throughput monitoring
+- Error analysis
 
 ---
 
 # Hardware Used
 
-## Main Controller
+## Microcontrollers
+- STM32H7
+- STM32H5
+- STM32F407
 
-- STM32H5 / STM32F4
+## Linux Node
+- BeagleBone Black
 
 ## Ethernet PHY
+- LAN8651 10BASE-T1S MAC-PHY
 
-- LAN8651
-
-## Additional Platforms
-
-- BeagleBone
-
-## Interfaces Used
-
+## Interfaces
 - SPI
 - USB
 - Ethernet
 - GPIO
-- UART
+
+---
+
+# Firmware Features
+
+## Communication Stack
+- SPI communication driver
+- Ethernet frame bridge
+- USB networking
+- USB HID interface
+- Multi-node packet handling
+
+## Industrial Ethernet Features
+- 10BASE-T1S communication
+- PLCA support
+- Multi-drop networking
+- Ethernet packet routing
+
+## Firmware Architecture
+- Modular driver structure
+- Register-level PHY configuration
+- TinyUSB integration
+- Communication abstraction layer
 
 ---
 
 # Software Stack
 
-## Embedded Firmware
-
+## Embedded
 - STM32 HAL
 - CMSIS
 - TinyUSB
 
-## Communication Protocols
-
-- USB RNDIS
-- USB NCM
-- USB HID
-- Ethernet
-- SPI
-
-## Development Tools
-
-- STM32CubeIDE
-- Python
+## Debugging and Analysis
+- Wireshark
 - Logic Analyzer
-- Oscilloscope
+- Python diagnostic tools
 
 ---
 
@@ -172,18 +251,7 @@ lan8651-industrial-ethernet-stack/
 ├── Middleware/
 │   └── TinyUSB/
 │
-├── Docs/
-│   ├── architecture.md
-│   ├── spi_driver_design.md
-│   ├── plca_notes.md
-│   ├── usb_stack_notes.md
-│   └── debugging_log.md
-│
 ├── Images/
-├── LogicAnalyzer/
-├── Performance/
-├── Tools/
-│   └── PythonBackend/
 │
 ├── README.md
 ├── .gitignore
@@ -192,229 +260,87 @@ lan8651-industrial-ethernet-stack/
 
 ---
 
-# Firmware Architecture
-
-## Layered Design
-
-The firmware is organized into multiple abstraction layers.
-
-### Application Layer
-
-Responsible for:
-
-- Communication handling
-- PLCA configuration
-- Diagnostics
-- Performance monitoring
-- Packet processing
-
-### Driver Layer
-
-Responsible for:
-
-- SPI communication
-- GPIO handling
-- USB interfacing
-- DMA transfers
-- Peripheral initialization
-
-### Middleware Layer
-
-Responsible for:
-
-- USB protocol stack
-- USB class handling
-- Networking support
-
----
-
 # SPI Communication Flow
 
 ```text
-STM32 Application
-        ↓
-SPI Driver Layer
-        ↓
+STM32 Firmware
+      ↓
+SPI Driver
+      ↓
 LAN8651 Register Access
-        ↓
-Ethernet PHY Communication
-        ↓
-Network Packet Transfer
+      ↓
+Ethernet Frame TX/RX
+      ↓
+10BASE-T1S Bus
 ```
 
 ---
 
-# USB Communication Architecture
+# PLCA Support
 
 The project includes:
-
-- USB RNDIS implementation
-- USB NCM communication
-- USB HID support
-
-USB communication was used for:
-
-- Device enumeration
-- Networking support
-- Host communication
-- Diagnostics and monitoring
-
----
-
-# PLCA Configuration
-
-The project includes experimentation with:
-
 - PLCA node configuration
-- Multi-node communication
-- Register-level PHY setup
-- Timing analysis
-- Throughput optimization
+- Register-level PLCA control
+- Multi-node collision avoidance
+- Timing synchronization analysis
 
-Configuration was performed through:
-
-- Direct register access
-- SPI communication interface
+PLCA configuration was implemented using:
+- SPI register access
+- USB HID control interface
 - Diagnostic monitoring tools
-
----
-
-# Performance Analysis
-
-Performance measurements performed:
-
-- SPI transfer latency
-- Ethernet throughput
-- USB communication stability
-- PLCA timing analysis
-- Multi-node communication testing
-
-The repository includes:
-
-- Logic analyzer captures
-- Throughput logs
-- Timing measurements
-- Debugging notes
 
 ---
 
 # Engineering Challenges
 
 ## SPI Synchronization
-
-Challenges encountered:
-
-- SPI timing stability
-- Register synchronization
-- Packet integrity verification
+- Frame timing stability
+- Register access synchronization
 - Communication reliability
 
 ## USB Enumeration
+- Composite device configuration
+- USB descriptor handling
+- Host compatibility
 
-Challenges encountered:
+## Multi-Node Communication
+- PLCA timing
+- Packet synchronization
+- Collision handling
 
-- Enumeration handling
-- Device descriptor debugging
+## Ethernet Diagnostics
+- Packet validation
+- Wireshark debugging
+- Throughput monitoring
+
+---
+
+# Performance Analysis
+
+The following were analyzed:
+- Ethernet throughput
+- Packet transfer latency
 - USB communication stability
-- Host recognition issues
-
-## PLCA Debugging
-
-Challenges encountered:
-
-- Node configuration
-- Timing adjustments
-- Multi-node synchronization
-- Throughput optimization
-
-## System Integration
-
-Challenges encountered:
-
-- STM32 ↔ LAN8651 integration
-- USB stack integration
-- BeagleBone communication testing
-- Performance debugging
-
----
-
-# Development Workflow
-
-## Firmware Development
-
-- Peripheral initialization
-- Driver development
-- Communication testing
-- Register debugging
-- Performance optimization
-
-## Validation
-
-- Logic analyzer debugging
-- Packet verification
-- Throughput testing
-- Multi-node testing
-- USB communication validation
-
----
-
-# Python Backend Tool
-
-The repository also contains a Python-based backend utility for:
-
-- Monitoring communication
-- Throughput analysis
-- PLCA control
-- Data visualization
-- Diagnostic logging
-
----
-
-# Repository Goals
-
-This repository is intended to demonstrate:
-
-- Embedded firmware engineering
-- Industrial communication systems
-- Ethernet communication concepts
-- USB stack integration
-- Embedded debugging workflows
-- Protocol analysis
-- Low-level driver development
-- Firmware architecture practices
+- SPI transfer timing
+- Multi-node reliability
 
 ---
 
 # Future Improvements
 
-Planned future improvements:
-
+Planned improvements:
 - FreeRTOS integration
-- Advanced diagnostics
-- Packet analysis dashboard
 - DMA optimization
-- Web-based monitoring interface
-- Extended multi-node support
-- Improved throughput benchmarking
-
----
-
-# Images and Debugging Captures
-
-The repository includes:
-
-- Hardware setup photos
-- Logic analyzer captures
-- Communication test screenshots
-- USB enumeration logs
-- Throughput measurement graphs
+- Advanced packet diagnostics
+- Web dashboard
+- Real-time monitoring tools
+- Automated throughput benchmarking
 
 ---
 
 # Third-Party Components
 
 This project uses:
-
 - STM32 HAL
 - CMSIS
 - TinyUSB
@@ -423,6 +349,19 @@ All third-party components remain property of their respective maintainers.
 
 ---
 
+# Repository Purpose
+
+This repository demonstrates:
+- Embedded firmware engineering
+- Industrial Ethernet communication
+- Embedded networking systems
+- USB networking integration
+- Protocol stack development
+- Ethernet diagnostics
+- Real-time communication systems
+
+---
+
 # Author
 
-Embedded firmware and industrial communication development project focused on STM32-based real-time networking systems.
+Embedded firmware and industrial communication development project focused on STM32-based industrial networking systems.
